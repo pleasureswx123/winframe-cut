@@ -1,0 +1,37 @@
+<script setup lang="ts">
+import { ref, computed, watch, onUnmounted } from 'vue'
+import { type FormInstance } from 'element-plus'
+import { useWorkshop } from '../store'
+import { clone, mm, T, money, areaM2 } from '../types'
+import { csv, download } from '../export'
+import { newId } from '../id'
+import LengthInput from './LengthInput.vue'
+const s=useWorkshop(),draft=ref(clone(s.project!.glass)),form=ref<FormInstance>()
+watch(()=>s.project,p=>{if(p)draft.value=clone(p.glass)})
+const dirty=computed(()=>JSON.stringify(draft.value)!==JSON.stringify(s.project!.glass))
+watch(dirty,v=>{s.glassDraftDirty=v;if(v)s.invalidate()})
+onUnmounted(()=>{s.glassDraftDirty=false})
+const dimensionRule={validator:(_:unknown,v:number,done:(e?:Error)=>void)=>done(Number.isSafeInteger(v)&&v>0?undefined:new Error('请输入大于零的有效尺寸')),trigger:'blur'}
+async function apply(){if(!await form.value?.validate().catch(()=>false))return false;const p=clone(s.project!);p.glass=clone(draft.value);return s.commit(p)}
+async function solve(){if(s.busy||s.glassSolving)return;if(dirty.value&&!await apply())return;await s.solveGlass()}
+function exportPlan(){if(s.glassPlan&&!dirty.value)download(`${s.project!.name}-玻璃排版.json`,JSON.stringify({project:s.project,result:s.glassPlan},null,2))}
+function exportCuts(){if(!s.glassPlan||dirty.value)return;download(`${s.project!.name}-玻璃逐刀.csv`,csv([['原板','规格','刀序','当前余料左Xmm','上Ymm','宽mm','高mm','方向','原板绝对坐标mm','刀缝mm','对应玻璃'],...s.glassPlan.sheets.flatMap(b=>b.cuts.map(c=>[b.id,b.stock_id,c.index,mm(c.region.x),mm(c.region.y),mm(c.region.w),mm(c.region.h),c.axis==='x'?'竖切':'横切',mm(c.at),mm(s.project!.glass.kerf),c.instance]))]),'text/csv;charset=utf-8')}
+const printPlan=()=>window.print()
+</script>
+<template><div class="glass-planner">
+<section class="panel no-print"><div class="panel-heading"><div><span class="eyebrow">GLASS CUTTING</span><h2>玻璃原板与二维切割</h2></div><el-tag>刀缝默认 0 mm</el-tag></div><p class="muted">同一玻璃材质、厚度的原板一起排版。默认规格仅为示例，请改为厂家的实际可切净尺寸；不同材质或厚度应分开建项目排料。</p>
+<el-form ref="form" :model="draft" :disabled="s.busy" label-position="top"><div class="cut-settings"><el-form-item label="玻璃切割刀缝" prop="kerf" :rules="[{validator:(_:unknown,v:number,done:(e?:Error)=>void)=>done(Number.isSafeInteger(v)&&v>=0&&v<=20*T?undefined:new Error('刀缝需在 0～20 mm 之间'))}]"><LengthInput v-model="draft.kerf" label="玻璃切割刀缝"/></el-form-item><el-form-item label="玻璃优化目标"><el-select v-model="draft.objective"><el-option value="sheets" label="最少张数，其次最少采购面积"/><el-option value="cost" label="最低金额，其次最少张数"/></el-select></el-form-item><el-form-item label="允许玻璃旋转 90°"><el-switch v-model="draft.allow_rotate" active-text="允许" inactive-text="禁止"/></el-form-item></div>
+<div class="glass-stock-grid"><article v-for="(row,index) in draft.stocks" :key="index" class="mobile-card"><div class="card-title"><b>玻璃原板 {{index+1}}</b><el-button text type="danger" @click="draft.stocks.splice(index,1)">删除原板</el-button></div><el-form-item label="规格编号" :prop="`stocks.${index}.id`" :rules="[{required:true,message:'请输入规格编号'}]"><el-input v-model="row.id" maxlength="80"/></el-form-item><div class="two-cols"><el-form-item label="原板宽度" :prop="`stocks.${index}.width`" :rules="[dimensionRule]"><LengthInput v-model="row.width" label="玻璃原板宽度"/></el-form-item><el-form-item label="原板高度" :prop="`stocks.${index}.height`" :rules="[dimensionRule]"><LengthInput v-model="row.height" label="玻璃原板高度"/></el-form-item><el-form-item label="单价 / 元"><el-input-number :model-value="row.price_cents/100" :min="0" :max="100000" :precision="2" :controls="false" @update:model-value="(v:number|undefined)=>row.price_cents=Math.round((v??0)*100)"/></el-form-item><el-form-item label="可用张数（空为不限）"><el-input-number v-model="row.available" :min="0" :max="500" :precision="0" :controls="false" @update:model-value="(v:number|undefined)=>row.available=v??null"/></el-form-item></div></article></div>
+<el-button class="full-button" @click="draft.stocks.push({id:'玻璃-'+newId(),width:2440*T,height:1830*T,price_cents:0,available:null})">添加玻璃原板规格</el-button>
+
+<div class="solve-action"><el-button :disabled="!dirty||s.busy" @click="apply">应用玻璃排料参数</el-button><el-button type="primary" :loading="s.glassSolving" :disabled="s.busy" @click="solve">计算玻璃采购与切割</el-button></div><el-alert v-if="dirty" title="玻璃排料参数尚未应用，旧方案已失效。请应用后保存或导出项目。" type="warning" :closable="false" class="full-button"/></el-form>
+<p class="muted">贯通直切：每刀切穿当前余料，按图下方刀序加工。刀缝计入面积损耗；原板边缘不额外切割。多策略搜索可行方案，未达到下界时不宣称全局最优。</p></section>
+<template v-if="s.glassPlan&&!dirty"><section class="panel"><div class="panel-heading"><h2>玻璃采购与切割方案</h2><div class="action-row no-print"><el-button @click="exportCuts">逐刀 CSV</el-button><el-button @click="exportPlan">完整玻璃方案</el-button><el-button @click="printPlan">打印</el-button></div></div>
+<el-alert :closable="false" :type="s.glassPlan.primary_proven?'success':'warning'" :title="s.glassPlan.primary_proven?'已达到面积下界，采购张数已证明最少。':'当前为多策略搜索得到的可行方案，未证明全局最优。'"/>
+<div class="plan-stats"><div><span>原板采购</span><strong>{{s.glassPlan.sheet_count}} <small>张</small></strong></div><div><span>采购金额</span><strong>{{s.project!.glass.stocks.filter(x=>x.available!==0).every(x=>x.price_cents>0)?'¥ '+money(s.glassPlan.cost_cents):'未完整录价'}}</strong></div><div><span>面积利用率</span><strong>{{s.glassPlan.total_stock_area?(100*s.glassPlan.total_glass_area/s.glassPlan.total_stock_area).toFixed(2):'0'}}%</strong></div><div><span>刀缝面积损耗</span><strong>{{areaM2(s.glassPlan.loss_area)}} <small>m²</small></strong></div></div>
+<div v-for="p in s.glassPlan.purchase" :key="p.stock_id" class="glass-purchase">{{p.stock_id}} · {{mm(p.width)}} × {{mm(p.height)}} mm <b>采购 {{p.count}} 张</b></div></section>
+<section v-for="sheet in s.glassPlan.sheets" :key="sheet.id" class="panel glass-sheet"><div class="panel-heading"><h3>{{sheet.id}} · {{sheet.stock_id}}</h3><span>{{mm(sheet.width)}} × {{mm(sheet.height)}} mm</span></div>
+<svg class="glass-sheet-svg" :viewBox="`0 0 ${sheet.width/T} ${sheet.height/T}`" role="img" :aria-label="`${sheet.id} 玻璃切割排版`"><rect :width="sheet.width/T" :height="sheet.height/T" fill="#e9ede4"/><rect v-for="(c,i) in sheet.cuts" :key="'cut'+i" :x="c.kerf_rect.x/T" :y="c.kerf_rect.y/T" :width="c.kerf_rect.w/T" :height="c.kerf_rect.h/T" fill="#d8994c"/><g v-for="(p,i) in sheet.pieces" :key="p.instance"><rect :x="p.rect.x/T" :y="p.rect.y/T" :width="p.rect.w/T" :height="p.rect.h/T" fill="#b9dbe1" stroke="#4f838c" stroke-width="1" vector-effect="non-scaling-stroke"/><text :x="(p.rect.x+p.rect.w/2)/T" :y="(p.rect.y+p.rect.h/2)/T" text-anchor="middle" dominant-baseline="middle" :font-size="Math.min(sheet.width/T/40,p.rect.w/T/3,p.rect.h/T/3)" fill="#29545c">{{i+1}}</text></g></svg>
+<div class="cut-sequence"><span v-for="(p,i) in sheet.pieces" :key="p.instance"><b>{{i+1}}</b>{{p.instance}} · {{mm(p.width)}} × {{mm(p.height)}} mm{{p.rotated?' · 旋转90°':''}} · 左上 ({{mm(p.rect.x)}}, {{mm(p.rect.y)}})</span></div><p class="muted">玻璃 {{areaM2(sheet.glass_area)}} m² / 刀缝 {{areaM2(sheet.loss_area)}} m² / 余料 {{areaM2(sheet.remnant_area)}} m²</p>
+<details><summary>逐刀顺序（原板左上角原点，坐标单位 mm）</summary><div class="glass-cut-table"><table class="plain-table"><thead><tr><th>刀序</th><th>当前余料：左上 / 宽×高</th><th>方向 / 原板坐标</th><th>刀缝</th></tr></thead><tbody><tr v-for="c in sheet.cuts" :key="c.index"><td>{{c.index}}</td><td>({{mm(c.region.x)}}, {{mm(c.region.y)}}) / {{mm(c.region.w)}} × {{mm(c.region.h)}}</td><td>{{c.axis==='x'?'竖切 X':'横切 Y'}} = {{mm(c.at)}}</td><td>{{mm(s.project!.glass.kerf)}}</td></tr></tbody></table></div></details>
+</section></template></div></template>

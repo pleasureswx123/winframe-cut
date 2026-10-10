@@ -1,0 +1,244 @@
+{
+  "project": {
+    "schema_version": 1,
+    "name": "2000 方窗 · Blender 基准",
+    "width": 4000000,
+    "height": 4000000,
+    "quantity": 1,
+    "profiles": {
+      "window_frame": {
+        "width": 60000,
+        "stock_key": "窗户外框"
+      },
+      "window_mullion": {
+        "width": 16000,
+        "stock_key": "窗户中挺"
+      },
+      "window_bead": {
+        "width": 60000,
+        "stock_key": "窗户压线"
+      },
+      "sash_frame": {
+        "width": 60000,
+        "stock_key": "窗扇外框"
+      },
+      "sash_mullion": {
+        "width": 16000,
+        "stock_key": "窗扇中挺"
+      },
+      "sash_bead": {
+        "width": 60000,
+        "stock_key": "窗扇压线"
+      }
+    },
+    "root": {
+      "id": "upper",
+      "kind": "split",
+      "axis": "y",
+      "position": 1068000,
+      "children": [
+        {
+          "id": "top-split-left",
+          "kind": "split",
+          "axis": "x",
+          "position": 992000,
+          "children": [
+            {
+              "id": "top-left",
+              "kind": "glass",
+              "axis": null,
+              "position": null,
+              "children": []
+            },
+            {
+              "id": "top-split-right",
+              "kind": "split",
+              "axis": "x",
+              "position": 3008000,
+              "children": [
+                {
+                  "id": "top-center",
+                  "kind": "glass",
+                  "axis": null,
+                  "position": null,
+                  "children": []
+                },
+                {
+                  "id": "top-right",
+                  "kind": "glass",
+                  "axis": null,
+                  "position": null,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "lower",
+          "kind": "split",
+          "axis": "y",
+          "position": 2932000,
+          "children": [
+            {
+              "id": "middle-split-left",
+              "kind": "split",
+              "axis": "x",
+              "position": 992000,
+              "children": [
+                {
+                  "id": "sash-left",
+                  "kind": "sash",
+                  "axis": null,
+                  "position": null,
+                  "children": [
+                    {
+                      "id": "sash-left-glass",
+                      "kind": "glass",
+                      "axis": null,
+                      "position": null,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "middle-split-right",
+                  "kind": "split",
+                  "axis": "x",
+                  "position": 3008000,
+                  "children": [
+                    {
+                      "id": "middle-glass",
+                      "kind": "glass",
+                      "axis": null,
+                      "position": null,
+                      "children": []
+                    },
+                    {
+                      "id": "sash-right",
+                      "kind": "sash",
+                      "axis": null,
+                      "position": null,
+                      "children": [
+                        {
+                          "id": "sash-bar",
+                          "kind": "split",
+                          "axis": "y",
+                          "position": 1708000,
+                          "children": [
+                            {
+                              "id": "sash-top",
+                              "kind": "glass",
+                              "axis": null,
+                              "position": null,
+                              "children": []
+                            },
+                            {
+                              "id": "sash-bottom",
+                              "kind": "glass",
+                              "axis": null,
+                              "position": null,
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "bottom-split-left",
+              "kind": "split",
+              "axis": "x",
+              "position": 992000,
+              "children": [
+                {
+                  "id": "bottom-left",
+                  "kind": "glass",
+                  "axis": null,
+                  "position": null,
+                  "children": []
+                },
+                {
+                  "id": "bottom-split-right",
+                  "kind": "split",
+                  "axis": "x",
+                  "position": 3008000,
+                  "children": [
+                    {
+                      "id": "bottom-center",
+                      "kind": "glass",
+                      "axis": null,
+                      "position": null,
+                      "children": []
+                    },
+                    {
+                      "id": "bottom-right",
+                      "kind": "glass",
+                      "axis": null,
+                      "position": null,
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "stocks": [
+    {
+      "id": "窗户外框-6000",
+      "stock_key": "窗户外框",
+      "length": 12000000,
+      "price_cents": 0,
+      "available": null
+    },
+    {
+      "id": "窗户中挺-6000",
+      "stock_key": "窗户中挺",
+      "length": 12000000,
+      "price_cents": 0,
+      "available": null
+    },
+    {
+      "id": "窗户压线-6000",
+      "stock_key": "窗户压线",
+      "length": 12000000,
+      "price_cents": 0,
+      "available": null
+    },
+    {
+      "id": "窗扇外框-6000",
+      "stock_key": "窗扇外框",
+      "length": 12000000,
+      "price_cents": 0,
+      "available": null
+    },
+    {
+      "id": "窗扇中挺-6000",
+      "stock_key": "窗扇中挺",
+      "length": 12000000,
+      "price_cents": 0,
+      "available": null
+    },
+    {
+      "id": "窗扇压线-6000",
+      "stock_key": "窗扇压线",
+      "length": 12000000,
+      "price_cents": 0,
+      "available": null
+    }
+  ],
+  "settings": {
+    "kerf": 6000,
+    "trim_start": 0,
+    "trim_end": 0,
+    "objective": "bars",
+    "time_limit": 10
+  }
+}
