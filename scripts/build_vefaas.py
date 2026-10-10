@@ -9,6 +9,7 @@ import sys
 import tarfile
 import tempfile
 from urllib.request import urlopen
+from urllib.parse import urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,10 +24,18 @@ def install_dependencies(artifact):
     # 云平台预装的 uv 和镜像源可能与本地不同，统一安装器与包源。
     env = {key: value for key, value in os.environ.items() if not key.startswith(('PIP_', 'UV_'))}
     env['PIP_CONFIG_FILE'] = os.devnull
-    print('安装 Python 依赖：pip，包源 https://pypi.org/simple', flush=True)
-    run([sys.executable, '-m', 'pip', '--isolated', 'install',
-         '--index-url', 'https://pypi.org/simple', '--no-cache-dir',
-         '--target', str(artifact / '.python'), '-r', str(ROOT / 'requirements.lock.txt')], env=env)
+    index = os.environ.get('WINFRAME_PYPI_INDEX_URL', 'https://pypi.tuna.tsinghua.edu.cn/simple')
+    parsed = urlsplit(index)
+    if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
+        raise ValueError('WINFRAME_PYPI_INDEX_URL 必须为不含凭据及查询参数的 HTTPS 包源地址')
+    print(f'安装 Python 依赖：pip，包源 {index}；总时限 300 秒', flush=True)
+    try:
+        run([sys.executable, '-m', 'pip', '--isolated', 'install',
+             '--index-url', index, '--no-cache-dir', '--disable-pip-version-check',
+             '--only-binary=:all:', '--timeout', '20', '--retries', '2', '--no-compile',
+             '--target', str(artifact / '.python'), '-r', str(ROOT / 'requirements.lock.txt')], env=env, timeout=300)
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError('依赖下载或安装超过 300 秒，请检查构建网络或通过 WINFRAME_PYPI_INDEX_URL 切换包源；这不是函数请求超时') from exc
 
 
 def node_environment(work):

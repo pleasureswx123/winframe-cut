@@ -138,7 +138,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\start.ps1 -SkipBui
 
 发布包包含 `backend/`、`dist/`、`.python/`、`run.sh` 和 `start_vefaas.py`，不复制本地数据库、`.env`、Windows 虚拟环境或浏览器测试输出。平台必须包含 `.python` 隐藏目录；启动器会检查关键产物缺失并明确报错。
 
-Python 依赖统一通过平台 Python 自带的 pip 从 `https://pypi.org/simple` 安装，禁用 pip 配置文件并隔离平台的 `PIP_*` / `UV_*` 环境配置，不再自动选择预装 uv。若出现找不到锁定版本，先检查日志中的包源及网络访问；不要直接删除锁文件或把所有依赖改成不锁版本。
+Python 依赖统一通过平台 Python 自带的 pip 安装，默认使用清华镜像 `https://pypi.tuna.tsinghua.edu.cn/simple`，禁用 pip 配置文件并隔离平台的 `PIP_*` / `UV_*` 环境配置，不再自动选择预装 uv。保留锁定版本，只安装二进制 wheel，不现场编译依赖。单次网络等待上限 20 秒、重试 2 次，整个依赖安装上限 300 秒，超时给出明确错误。
+
+若镜像缺包或访问不畅，可显式修改构建命令为 `WINFRAME_PYPI_INDEX_URL=https://pypi.org/simple sh build.sh`，或指定其他可信 HTTPS 包源。默认不自动回退官方源，避免国内构建节点下载大文件缓慢再次耗尽流水线时限。构建阶段超时与控制台的函数请求执行超时不是同一个参数；不要通过增加请求执行超时来处理构建下载失败。
 
 启动时端口按 `_FAAS_RUNTIME_PORT` → `PORT` → `8000` 的顺序读取，监听 `0.0.0.0`。健康检查路径为 `/api/health`。不要把控制台的执行超时当作算法求解时限：算法仍按原料型号逐个求解；前端当前请求超时为 240 秒。
 

@@ -44,7 +44,21 @@ def test_dependency_install_ignores_platform_package_sources(tmp_path, monkeypat
     module.install_dependencies(tmp_path)
     args, options = calls[0]
     assert args[:5] == [module.sys.executable, '-m', 'pip', '--isolated', 'install']
-    assert args[args.index('--index-url') + 1] == 'https://pypi.org/simple'
+    assert args[args.index('--index-url') + 1] == 'https://pypi.tuna.tsinghua.edu.cn/simple'
+    assert options['timeout'] == 300
+    assert '--only-binary=:all:' in args
     assert args[args.index('--target') + 1] == str(tmp_path / '.python')
     assert options['env']['PIP_CONFIG_FILE'] == module.os.devnull
     assert not any(key.startswith(('PIP_', 'UV_')) for key in options['env'] if key != 'PIP_CONFIG_FILE')
+    monkeypatch.setenv('WINFRAME_PYPI_INDEX_URL', 'https://pypi.org/simple')
+    module.install_dependencies(tmp_path)
+    assert 'https://pypi.org/simple' in calls[-1][0]
+    monkeypatch.setenv('WINFRAME_PYPI_INDEX_URL', 'http://invalid.example/simple')
+    with pytest.raises(ValueError, match='HTTPS'):
+        module.install_dependencies(tmp_path)
+    monkeypatch.setenv('WINFRAME_PYPI_INDEX_URL', 'https://pypi.org/simple')
+    def timeout(args, **kwargs):
+        raise module.subprocess.TimeoutExpired(args, kwargs['timeout'])
+    monkeypatch.setattr(module, 'run', timeout)
+    with pytest.raises(RuntimeError, match='不是函数请求超时'):
+        module.install_dependencies(tmp_path)
