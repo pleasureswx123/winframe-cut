@@ -1,6 +1,7 @@
 # 前端依赖、构建产物与工具缓存；保留依赖锁文件
 node_modules/
 /dist/
+/.vefaas/
 .vite/
 *.tsbuildinfo
 

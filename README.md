@@ -11,6 +11,7 @@
 - [功能概览](#功能概览)
 - [安装与启动](#安装与启动)
 - [手机访问](#手机访问)
+- [火山引擎 veFaaS 试部署](#火山引擎-vefaas-试部署)
 - [从空白窗型开始](#从空白窗型开始)
 - [尺寸与连接规则](#尺寸与连接规则)
 - [型材切割](#型材切割)
@@ -114,6 +115,45 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\start.ps1 -SkipBui
 手机设计页使用「画布 / 尺寸参数 / 区域与中挺」切换。点击画布区域后，可以通过「编辑选中区域」设置用途或输入中挺坐标。密集窗型可放大画布，或通过区域列表选取。切割长图与明细表支持横向滚动。
 
 局域网模式监听 `0.0.0.0`，可访问服务的设备共享本机存档。当前没有身份验证，不应直接把此服务暴露到公网。已验证手机尺寸的浏览器布局，尚未完成手机真机兼容性验收。
+
+## 火山引擎 veFaaS 试部署
+
+仓库提供 Linux Python 3.12 源码部署脚本。先将部署文件提交并推送到绑定的 GitHub 分支，再使用以下配置创建应用：
+
+| 控制台字段 | 填写值 |
+|---|---|
+| 代码仓库 / 分支 | `winframe-cut` / `main` |
+| 框架类型 | FastAPI |
+| 运行环境 | Native Python 3.12 |
+| 构建命令 | `sh build.sh` |
+| 产物路径 | `.vefaas/artifact` |
+| 启动命令 | `sh run.sh` |
+| 监听端口 | `8000` |
+| 执行超时 | 试运行建议 `240` 秒，同时核对网关请求超时 |
+| 实例规格 | 可从 `2 vCPU / 4 GiB` 试运行，按实测调整 |
+
+这些命令替换平台默认的 `uv pip install -r requirements.txt` 和 `python main.py`。产物路径也必须同步修改，不能继续填写 `./`。启动命令相对于发布包根目录执行。
+
+构建脚本先在临时目录安装前端依赖、生成 `dist`，再把后端和锁定的 Python 依赖复制进发布包。环境没有合适的 Node.js 时，从 `nodejs.org` 下载固定版本 24.14.1 并校验 SHA-256。构建环境需要访问 Node.js、npm 和 Python 包仓库；无需 root 权限。运行实例只需要 Python 3.12，不需要 Node.js，也不会在启动时下载依赖。
+
+发布包包含 `backend/`、`dist/`、`.python/`、`run.sh` 和 `start_vefaas.py`，不复制本地数据库、`.env`、Windows 虚拟环境或浏览器测试输出。平台必须包含 `.python` 隐藏目录；启动器会检查关键产物缺失并明确报错。
+
+启动时端口按 `_FAAS_RUNTIME_PORT` → `PORT` → `8000` 的顺序读取，监听 `0.0.0.0`。健康检查路径为 `/api/health`。不要把控制台的执行超时当作算法求解时限：算法仍按原料型号逐个求解；前端当前请求超时为 240 秒。
+
+**此配置用于受控试部署，不代表已经完成面向客户的生产化。** 未设置 `WINFRAME_DB` 时，云端存档默认写入 `/tmp/winframe/projects.db`，只作为临时数据，可能随实例销毁而消失，不同实例也不共享。设置数据库路径本身不会获得持久化能力；正式服务需要独立数据库以及用户登录、存档归属和权限控制。当前存档接口无身份验证，不应将真实客户资料放入公开试用服务。
+
+本机具备 Docker 时，可以在 Linux Python 3.12 环境验证构建（PowerShell）：
+
+```powershell
+docker run --rm --mount "type=bind,source=$($PWD.Path),target=/workspace" -w /workspace python:3.12-slim-bookworm sh build.sh
+docker run --rm -p 127.0.0.1:8011:8000 --mount "type=bind,source=$($PWD.Path)/.vefaas/artifact,target=/app,readonly" -w /app python:3.12-slim-bookworm sh run.sh
+```
+
+访问 `http://127.0.0.1:8011` 和 `/api/health` 验证页面与接口。云平台构建、发布、网关和权限仍需在实际账号中验证。本机 Docker 验证不等同于云上部署成功。
+
+2026-10-10 本地验证：Linux x86_64 / Python 3.12 / Debian Bookworm 完整构建通过；发布包在非管理员用户、只读目录和自定义平台端口下启动成功。页面资源、基准几何、型材 10 根整料、玻璃 1 张原板、材料守恒及临时存档读写均通过；新增启动校验后 Python 测试共 49 项通过。
+
+参考：[官方 Web 应用端口要求](https://docs.volcengine.com/docs/vefaas/Native_runtime_Development_methods_Web_applications?lang=zh)、[源码自动构建部署](https://docs.volcengine.com/docs/vefaas/Automaticallybuildinganddeployingapplications?lang=en)。
 
 ## 从空白窗型开始
 
