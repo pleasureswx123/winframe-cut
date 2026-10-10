@@ -29,3 +29,22 @@ def test_invalid_port_rejected(value):
 def test_incomplete_artifact_rejected(tmp_path):
     with pytest.raises(RuntimeError, match='构建'):
         launcher().check_artifact(tmp_path)
+
+
+def test_dependency_install_ignores_platform_package_sources(tmp_path, monkeypatch):
+    path = Path(__file__).resolve().parents[1] / 'scripts' / 'build_vefaas.py'
+    spec = importlib.util.spec_from_file_location('build_vefaas', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    monkeypatch.setenv('PIP_INDEX_URL', 'https://invalid.example/simple')
+    monkeypatch.setenv('PIP_EXTRA_INDEX_URL', 'https://invalid.example/extra')
+    monkeypatch.setenv('UV_DEFAULT_INDEX', 'https://invalid.example/uv')
+    calls = []
+    monkeypatch.setattr(module, 'run', lambda args, **kwargs: calls.append((args, kwargs)))
+    module.install_dependencies(tmp_path)
+    args, options = calls[0]
+    assert args[:5] == [module.sys.executable, '-m', 'pip', '--isolated', 'install']
+    assert args[args.index('--index-url') + 1] == 'https://pypi.org/simple'
+    assert args[args.index('--target') + 1] == str(tmp_path / '.python')
+    assert options['env']['PIP_CONFIG_FILE'] == module.os.devnull
+    assert not any(key.startswith(('PIP_', 'UV_')) for key in options['env'] if key != 'PIP_CONFIG_FILE')

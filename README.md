@@ -138,6 +138,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\start.ps1 -SkipBui
 
 发布包包含 `backend/`、`dist/`、`.python/`、`run.sh` 和 `start_vefaas.py`，不复制本地数据库、`.env`、Windows 虚拟环境或浏览器测试输出。平台必须包含 `.python` 隐藏目录；启动器会检查关键产物缺失并明确报错。
 
+Python 依赖统一通过平台 Python 自带的 pip 从 `https://pypi.org/simple` 安装，禁用 pip 配置文件并隔离平台的 `PIP_*` / `UV_*` 环境配置，不再自动选择预装 uv。若出现找不到锁定版本，先检查日志中的包源及网络访问；不要直接删除锁文件或把所有依赖改成不锁版本。
+
 启动时端口按 `_FAAS_RUNTIME_PORT` → `PORT` → `8000` 的顺序读取，监听 `0.0.0.0`。健康检查路径为 `/api/health`。不要把控制台的执行超时当作算法求解时限：算法仍按原料型号逐个求解；前端当前请求超时为 240 秒。
 
 **此配置用于受控试部署，不代表已经完成面向客户的生产化。** 未设置 `WINFRAME_DB` 时，云端存档默认写入 `/tmp/winframe/projects.db`，只作为临时数据，可能随实例销毁而消失，不同实例也不共享。设置数据库路径本身不会获得持久化能力；正式服务需要独立数据库以及用户登录、存档归属和权限控制。当前存档接口无身份验证，不应将真实客户资料放入公开试用服务。
