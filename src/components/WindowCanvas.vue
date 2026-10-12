@@ -20,7 +20,7 @@ function clickRegion(e:MouseEvent,r:Region){
   <div class="canvas-shell">
     <div class="canvas-topline"><span><i class="status-dot"/> 实时尺寸视图</span><span>左上角原点 · 单位 mm</span></div>
     <div class="drawing-scroll">
-      <svg v-if="s.project&&s.geometry" ref="svg" class="window-svg" :style="{width:zoom+'%',minWidth:zoom+'%'}" :viewBox="`${-margin} ${-margin} ${w+2*margin} ${h+2*margin}`" role="img" aria-label="窗型设计画布">
+      <svg v-if="s.project&&s.geometry" ref="svg" class="window-svg" :style="{width:zoom+'%',minWidth:zoom+'%',height:zoom+'%'}" :viewBox="`${-margin} ${-margin} ${w+2*margin} ${h+2*margin}`" role="img" aria-label="窗型设计画布">
         <defs><pattern id="glass-lines" width="32" height="32" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line y2="32" stroke="#cbded8" stroke-width="1"/></pattern></defs>
         <g :font-size="font" font-family="inherit">
           <g stroke="#8aa39b" :stroke-width="font/35" fill="none">
@@ -42,6 +42,6 @@ function clickRegion(e:MouseEvent,r:Region){
         </g>
       </svg>
     </div>
-    <div class="canvas-bottom"><span><i class="legend-frame"/>外框 <i class="legend-mullion"/>中挺 <i class="legend-bead"/>压线</span><div class="zoom"><span>{{zoom}}%</span><el-slider v-model="zoom" :min="70" :max="180" :step="10" aria-label="画布缩放"/></div></div>
+    <div class="canvas-bottom"><span><i class="legend-frame"/>外框 <i class="legend-mullion"/>中挺 <i class="legend-bead"/>压线</span><div class="zoom"><el-button text aria-label="缩小画布" :disabled="zoom<=70" @click="zoom=Math.max(70,zoom-10)">−</el-button><span>{{zoom}}%</span><el-button text aria-label="放大画布" :disabled="zoom>=180" @click="zoom=Math.min(180,zoom+10)">+</el-button><el-button text @click="zoom=100">适应画布</el-button><el-slider v-model="zoom" :min="70" :max="180" :step="10" aria-label="画布缩放"/></div></div>
   </div>
 </template>

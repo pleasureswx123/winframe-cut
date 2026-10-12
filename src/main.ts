@@ -5,6 +5,7 @@ import ElementPlus from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import 'element-plus/dist/index.css'
 import './style.css'
+import './interaction.css'
 import App from './App.vue'
 import Workbench from './views/Workbench.vue'
 const router=createRouter({history:createWebHashHistory(),scrollBehavior:()=>({top:0}),routes:[{path:'/',redirect:'/design'},{path:'/:tab(design|materials|cutting)',component:Workbench}]})

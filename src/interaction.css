@@ -1,0 +1,122 @@
+/* 工作区交互布局：提升信息可读性，保持常用动作在视线内。 */
+:root { --el-font-size-base: 14px; --el-component-size: 38px; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid #b88a46; outline-offset: 3px; }
+.main-layout { padding-top: 22px; }
+.page-intro { margin-bottom: 18px; }
+.page-intro p { font-size: 14px; }
+.app-header nav a { font-size: 14px; }
+.workflow-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+.workflow-links { display: flex; align-items: center; gap: 12px; }
+.workflow-links a { display: flex; align-items: center; gap: 8px; min-height: 40px; color: #64766b; }
+.workflow-links b { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: #e4eae1; font-size: 12px; }
+.workflow-links .router-link-active { font-weight: 600; color: #234f40; }
+.workflow-links .router-link-active b { background: #315f50; color: white; }
+.activity-status { color: #63756b; font-size: 12px; }
+.pending-changes { position: sticky; top: 8px; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 16px; border: 1px solid #ddcda7; background: #fff9eb; border-radius: 9px; padding: 12px 16px; margin-bottom: 16px; box-shadow: 0 4px 16px #5449260b; }
+.pending-changes strong, .pending-changes span { display: block; }
+.pending-changes strong { color: #775624; font-size: 14px; }
+.pending-changes span { color: #78684c; font-size: 12px; margin-top: 4px; }
+.metrics { padding: 14px 22px; margin-bottom: 18px; }
+.metrics span { font-size: 12px; color: #64776a; }
+.metrics strong { font-size: 24px; }
+.el-form-item--label-top .el-form-item__label { font-size: 13px; line-height: 20px; color: #53695c; }
+.el-input__inner, .el-select__wrapper { font-size: 14px; }
+.el-input__wrapper, .el-select__wrapper { min-height: 38px; }
+.parameter-panel .el-collapse-item__header { min-height: 44px; height: auto; font-size: 13px; line-height: 1.5; color: #365b49; }
+.parameter-groups { margin-bottom: 16px; }
+.parameter-panel .muted { font-size: 12px; }
+.parameter-submit { position: sticky; bottom: 0; background: #fff; padding: 10px 0 2px; border-top: 1px solid #e6ebe1; z-index: 2; }
+.parameter-submit .full-button { margin: 0; }
+.return-canvas { display: none; }
+.drawing-toolbar { gap: 8px; flex-wrap: wrap; }
+.tool-buttons .el-button { font-size: 13px; min-height: 38px; }
+.drawing-toolbar > div:last-child { display: flex; }
+.drawing-scroll { height: clamp(360px, 54vh, 660px); padding: 20px 28px; align-items: flex-start; }
+.window-svg { max-height: none; }
+.canvas-hint { color: #5b705e; font-size: 12px; }
+.canvas-topline, .canvas-bottom { font-size: 12px; color: #62786a; }
+.zoom { gap: 4px; }
+.zoom .el-button { padding: 6px 9px; min-width: 32px; }
+.zoom .el-slider { display: none; }
+.region-actions .el-button { font-size: 13px; min-height: 40px; }
+.region-badge, .coordinates { font-size: 12px; }
+.coordinates dt, .inspector-note { color: #677b6c; }
+.inspector-note { font-size: 12px; }
+.material-strip span { font-size: 12px; color: #64776a; }
+.workspace-tabs { position: sticky; top: 0; z-index: 20; background: #f3f5f1; padding-top: 6px; }
+.workspace-tabs .el-tabs__header { margin: 0; }
+.workspace-tabs .el-tabs__item { height: 48px; font-size: 15px; }
+.workspace-tabs .el-tabs__content { display: none; }
+.profile-planner { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.planner-shortcuts { display: flex; flex-wrap: wrap; gap: 8px; }
+.profile-planner > section { scroll-margin-top: 64px; }
+.stock-detail summary { color: #315f50; font-size: 14px; line-height: 1.7; }
+.stock-detail summary span, .stock-detail summary small { display: block; padding-left: 16px; }
+.stock-detail summary span { font-size: 13px; color: #64776a; }
+.stock-detail summary small { font-size: 12px; color: #64776a; font-weight: 400; }
+.stock-detail[open] summary small { display: none; }
+.stock-detail .card-title { border-top: 1px solid #e0e6dd; padding-top: 12px; margin-top: 8px; }
+.filter-summary { display: flex; align-items: center; justify-content: space-between; min-height: 36px; margin-bottom: 10px; color: #64776a; font-size: 13px; }
+.el-table, .el-table th.el-table__cell { font-size: 13px; }
+.el-table th.el-table__cell { color: #566d5b; }
+.table-footnote { font-size: 12px; line-height: 1.8; }
+.solve-action { border-top: 1px solid #e6ebe1; padding-top: 18px; }
+.field-error { display: block; font-size: 12px; line-height: 1.6; margin-top: 4px; }
+@media (min-width: 1151px) {
+  .parameter-panel, .inspector { position: sticky; top: 18px; max-height: calc(100dvh - 36px); overflow-y: auto; scrollbar-width: thin; }
+}
+@media screen and (max-width: 760px) {
+  .main-layout { padding-top: 14px; }
+  .app-header { gap: 8px; }
+  .page-intro h1 { font-size: 22px; }
+  .page-intro p { font-size: 13px; margin-top: 8px; }
+  .page-intro p span { margin-top: 4px; }
+  .intro-actions { margin-top: 12px; }
+  .workflow-bar { display: block; margin-bottom: 12px; }
+  .workflow-links { display: none; }
+  .activity-status { display: block; min-height: 20px; }
+  .metrics { padding: 12px; margin-bottom: 10px; }
+  .metrics strong { font-size: 20px; }
+  .metrics span { font-size: 11px; }
+  .pending-changes { position: relative; top: auto; z-index: 1; flex-wrap: wrap; padding: 12px; gap: 10px; }
+  .pending-changes .action-row { width: 100%; }
+  .pending-changes .el-button { flex: 1; padding: 8px; font-size: 12px; }
+  .mobile-design-tabs .el-button { min-height: 44px; font-size: 13px; }
+  .design-layout { scroll-margin-top: 66px; }
+  .drawing-toolbar { padding: 10px 8px; }
+  .tool-buttons .el-button { padding: 8px; font-size: 12px; }
+  .drawing-toolbar .el-button { min-height: 44px; }
+  .drawing-scroll { height: clamp(280px, 45dvh, 430px); padding: 14px 18px; }
+  .canvas-topline { font-size: 11px; }
+  .canvas-bottom { gap: 8px; }
+  .zoom { margin-left: auto; }
+  .zoom .el-button { min-height: 44px; min-width: 38px; }
+  .mobile-region-button { color: #315f50; background: #eef5ef; border-color: #c1d4ca; font-size: 13px; min-height: 44px; }
+  .el-button { min-height: 44px; }
+  .el-input__wrapper, .el-select__wrapper { min-height: 44px; }
+  .el-input__inner { font-size: 16px; }
+  .el-input-number { --el-input-number-width: 100%; }
+  .el-input-number__increase, .el-input-number__decrease { width: 34px; }
+  .return-canvas { display: inline-flex; }
+  .parameter-submit { bottom: calc(58px + env(safe-area-inset-bottom)); padding: 10px 0; display: flex; gap: 8px; }
+  .parameter-submit .full-button { flex: 1; width: auto; }
+  .parameter-submit .return-canvas { flex-shrink: 0; }
+  .material-strip { gap: 12px; padding: 14px; }
+  .material-strip span { font-size: 11px; }
+  .material-strip b { font-size: 17px; }
+  .panel-heading h2 { font-size: 18px; }
+  .panel-heading h2 small { display: inline-block; margin: 6px 0 0; }
+  .solve-action { gap: 12px; }
+  .workspace-tabs { padding-top: 0; }
+  .table-controls { margin-bottom: 8px; }
+  .el-dialog__footer { display: flex; gap: 8px; }
+  .el-dialog__footer .el-button { flex: 1; }
+  .el-radio-button__inner { padding: 12px 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}
+@media print {
+  .parameter-panel, .inspector { position: static; max-height: none; overflow: visible; }
+}
