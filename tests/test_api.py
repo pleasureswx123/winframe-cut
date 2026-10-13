@@ -2,10 +2,10 @@ from fastapi.testclient import TestClient
 from backend.main import app
 from backend.sample import sample_project
 
-client=TestClient(app)
 
 
-def test_api_calculation_and_reject_invalid_tree():
+def test_api_calculation_and_reject_invalid_tree(authenticated_client):
+    client=authenticated_client
     sample=client.get('/api/sample').json()
     r=client.post('/api/calculate',json=sample)
     assert r.status_code==200 and r.json()['count']==61
@@ -14,10 +14,10 @@ def test_api_calculation_and_reject_invalid_tree():
     assert r.status_code==422
 
 
-def test_storage_round_trip_and_update(tmp_path,monkeypatch):
-    monkeypatch.setenv('WINFRAME_DB',str(tmp_path/'projects.db'))
+def test_storage_round_trip_and_update(authenticated_client,saved_house):
+    client=authenticated_client
     data=sample_project().model_dump()
-    r=client.post('/api/projects',json=data);assert r.status_code==200
+    r=client.post('/api/windows',json={'house_id':saved_house['id'],'project':data});assert r.status_code==201
     id=r.json()['id']
     assert client.get('/api/projects/'+id).json()==data
     data['name']='测试窗型'
@@ -26,14 +26,15 @@ def test_storage_round_trip_and_update(tmp_path,monkeypatch):
     assert client.get('/api/projects/nonexistent').status_code==404
 
 
-def test_invalid_input_never_saved(tmp_path,monkeypatch):
-    monkeypatch.setenv('WINFRAME_DB',str(tmp_path/'projects.db'))
+def test_invalid_input_never_saved(authenticated_client,saved_house):
+    client=authenticated_client
     data=sample_project().model_dump();data['width']=1
-    assert client.post('/api/projects',json=data).status_code==422
+    assert client.post('/api/windows',json={'house_id':saved_house['id'],'project':data}).status_code==422
     assert client.get('/api/projects').json()==[]
 
 
-def test_incomplete_stock_draft_can_restore_but_cannot_cut():
+def test_incomplete_stock_draft_can_restore_but_cannot_cut(authenticated_client):
+    client=authenticated_client
     p=sample_project().model_dump()
     payload=dict(project=p,stocks=[],settings=dict(objective='cost'))
     assert client.post('/api/validate',json=payload).status_code==200

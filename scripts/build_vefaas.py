@@ -78,7 +78,7 @@ def main():
         work = Path(folder)
         frontend = work / 'frontend'
         frontend.mkdir()
-        for name in ['package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html']:
+        for name in ['package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'index.html', 'admin.html']:
             shutil.copy2(ROOT / name, frontend / name)
         for name in ['src', 'public']:
             shutil.copytree(ROOT / name, frontend / name)

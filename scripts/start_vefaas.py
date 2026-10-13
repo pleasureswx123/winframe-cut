@@ -12,7 +12,7 @@ def listen_port(environ):
 
 
 def check_artifact(root):
-    for relative in ['dist/index.html', 'backend/main.py', '.python/uvicorn/__init__.py']:
+    for relative in ['dist/index.html', 'dist/admin.html', 'backend/main.py', '.python/uvicorn/__init__.py']:
         if not (root / relative).is_file():
             raise RuntimeError(f'发布包缺少 {relative}，请先执行 sh build.sh 并选择 .vefaas/artifact 作为构建产物')
 

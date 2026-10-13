@@ -113,16 +113,15 @@ def test_baseline_every_cut_and_batch_area_conservation(kerf):
     assert len([x for s in plan['sheets'] for x in s['pieces']])==20
 
 
-def test_legacy_json_defaults_api_and_glass_storage(tmp_path,monkeypatch):
-    client=TestClient(app)
+def test_legacy_json_defaults_api_and_glass_storage(authenticated_client,saved_house):
+    client=authenticated_client
     data=single().model_dump();data.pop('glass')
     legacy=Project.model_validate(data)
     assert legacy.glass.width_deduction==30*T and legacy.glass.kerf==0
     r=client.post('/api/optimize-glass',json=data)
     assert r.status_code==200 and r.json()['sheet_count']==1
-    monkeypatch.setenv('WINFRAME_DB',str(tmp_path/'glass.db'))
     data=single().model_dump();data['glass']['kerf']=6000;data['glass']['width_deduction']=50000
-    id=client.post('/api/projects',json=data).json()['id']
+    id=client.post('/api/windows',json={'house_id':saved_house['id'],'project':data}).json()['id']
     assert client.get('/api/projects/'+id).json()['glass']==data['glass']
     data['glass']['kerf']=-1
     assert client.post('/api/optimize-glass',json=data).status_code==422

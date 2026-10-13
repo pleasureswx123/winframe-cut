@@ -1,0 +1,31 @@
+<script setup lang="ts">
+import {ref,onMounted,computed} from 'vue'
+import {useRoute} from 'vue-router'
+import {ElMessageBox,type FormInstance} from 'element-plus'
+import {ContactRound,House as HouseIcon,Search,Plus,ArrowRight,Phone,MapPin,PanelsTopLeft} from 'lucide-vue-next'
+import {api,errorText} from '../api'
+import {defaultSettings,houseInput,type Customer,type House,type Page} from '../business'
+const props=defineProps<{houses?:boolean}>(),route=useRoute()
+const items=ref<(Customer|House)[]>([]),parent=ref<Customer|null>(null),page=ref(1),total=ref(0),q=ref(''),loading=ref(false),error=ref(''),dialog=ref(false),saving=ref(false),form=ref<FormInstance>()
+const kind=computed(()=>props.houses?'houses':'customers'),label=computed(()=>props.houses?'房屋项目':'客户')
+const empty=()=>({name:'',phone:'',address:'',notes:'',layout:''})
+const draft=ref(empty()),editing=ref<Customer|House|null>(null)
+async function load(){loading.value=true;error.value='';try{const {data}=await api.get<Page<Customer|House>>('/'+kind.value,{params:{page:page.value,page_size:12,q:q.value,...(props.houses?{customer_id:route.params.customerId}:{})}});items.value=data.items;total.value=data.total}catch(e){error.value=errorText(e)}finally{loading.value=false}}
+onMounted(async()=>{if(props.houses){try{parent.value=(await api.get('/customers/'+route.params.customerId)).data}catch(e){error.value=errorText(e);return}}await load()})
+function edit(row?:Customer|House){editing.value=row??null;draft.value={...empty(),...row};dialog.value=true}
+async function save(){
+ if(!await form.value?.validate().catch(()=>false))return
+ saving.value=true;error.value=''
+ try{
+  const d=draft.value
+  const body=props.houses?{...(editing.value?houseInput(editing.value as House):{customer_id:route.params.customerId,stocks:[],settings:defaultSettings(),glass_groups:{}}),name:d.name,address:d.address,layout:d.layout,notes:d.notes}:{name:d.name,phone:d.phone,address:d.address,notes:d.notes}
+  if(editing.value)await api.put(`/${kind.value}/${editing.value.id}`,body);else await api.post('/'+kind.value,body)
+  dialog.value=false;await load()
+ }catch(e){error.value=errorText(e)}finally{saving.value=false}
+}
+async function remove(row:Customer|House){try{await ElMessageBox.confirm(`确认删除“${row.name}”？有下级数据时无法删除。`,'删除'+label.value,{type:'warning'});await api.delete(`/${kind.value}/${row.id}`);await load()}catch(e){if(e!=='cancel'&&e!=='close')error.value=errorText(e)}}
+</script>
+<template><main class="platform-page customer-workspace"><div class="page-heading"><div><router-link v-if="houses" to="/customers">← 客户列表</router-link><span v-else class="eyebrow">CUSTOMERS / 客户管理</span><h1>{{houses?parent?.name+' · 房屋项目':'我的客户'}}</h1><p class="muted">{{houses?'一个客户可以管理多套住宅、别墅或自建房项目。':'客户资料、房屋与窗型集中管理，数据仅属于你的账号。'}}</p></div><el-button type="primary" @click="edit()"><Plus :size="17"/>新增{{label}}</el-button></div><el-alert v-if="error" :title="error" type="error" :closable="false"/><section class="panel customer-library"><div class="customer-library-toolbar"><div class="customer-library-title"><h2>{{houses?'房屋项目':'客户列表'}}</h2><span>{{loading?'加载中':total+(houses?' 个项目':' 位客户')}}</span></div><div class="search-row"><el-input v-model="q" :prefix-icon="Search" :aria-label="'搜索'+label+'名称'" :placeholder="'搜索'+label+'名称'" clearable @clear="page=1;load()" @keyup.enter="page=1;load()"/><el-button @click="page=1;load()">搜索</el-button></div></div>
+<section v-loading="loading" class="entity-grid" :class="{'has-items':items.length}"><article v-for="row in items" :key="row.id" class="panel entity-card customer-card"><div class="customer-card-heading"><span class="customer-card-icon"><component :is="houses?HouseIcon:ContactRound" :size="22"/></span><h2>{{row.name}}</h2></div><p class="customer-detail"><Phone v-if="'phone' in row" :size="14"/><HouseIcon v-else :size="14"/>{{'phone' in row?row.phone||'未填写电话':row.layout||'未填写户型'}}</p><p class="customer-detail"><MapPin :size="14"/>{{row.address||'未填写地址'}}</p><p v-if="row.notes" class="customer-note">{{row.notes}}</p><div class="action-row"><router-link :to="houses?'/houses/'+row.id:'/customers/'+row.id+'/houses'"><el-button type="primary" plain>{{houses?'查看窗型':'管理房屋'}}<ArrowRight :size="14"/></el-button></router-link><el-button text @click="edit(row)">编辑</el-button><el-button text type="danger" @click="remove(row)">删除</el-button></div></article></section>
+<div v-if="!loading&&!items.length&&!error" class="customer-empty"><div class="customer-empty-icon"><component :is="q?Search:houses?HouseIcon:ContactRound" :size="34" :stroke-width="1.4"/></div><h2>{{q?'未找到匹配的'+label:'创建你的第一'+(houses?'个房屋项目':'位客户')}}</h2><p>{{q?'换个名称试试，或清空搜索查看全部数据。':houses?'按住宅、别墅或自建房建立项目，再添加各个房间的窗型。':'从一份客户资料开始，集中管理房屋项目与每一樘窗。'}}</p><el-button v-if="q" @click="q='';page=1;load()">清空搜索</el-button><el-button v-else type="primary" @click="edit()"><Plus :size="16"/>新增{{label}}</el-button><div v-if="!q&&!houses" class="customer-flow"><span><ContactRound :size="15"/>建立客户</span><ArrowRight :size="14"/><span><HouseIcon :size="15"/>添加房屋</span><ArrowRight :size="14"/><span><PanelsTopLeft :size="15"/>设计窗型</span></div></div>
+<el-pagination v-if="total>12" v-model:current-page="page" :page-size="12" :total="total" layout="prev,pager,next" @current-change="load"/></section><el-dialog v-model="dialog" :title="(editing?'编辑':'新增')+label" width="min(520px,94vw)"><el-alert v-if="error" :title="error" type="error" :closable="false"/><el-form ref="form" :model="draft" label-position="top"><el-form-item :label="label+'名称'" prop="name" :rules="[{required:true,whitespace:true,message:'请输入名称'}]"><el-input v-model="draft.name" maxlength="100"/></el-form-item><el-form-item v-if="!houses" label="电话"><el-input v-model="draft.phone" maxlength="40"/></el-form-item><el-form-item v-else label="户型描述"><el-input v-model="draft.layout" placeholder="例如：两室一厅 / 三层自建房" maxlength="100"/></el-form-item><el-form-item label="地址"><el-input v-model="draft.address" maxlength="300"/></el-form-item><el-form-item label="备注"><el-input v-model="draft.notes" type="textarea" maxlength="2000"/></el-form-item></el-form><template #footer><el-button @click="dialog=false">取消</el-button><el-button type="primary" :loading="saving" @click="save">保存</el-button></template></el-dialog></main></template>

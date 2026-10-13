@@ -41,7 +41,21 @@ class Profile(StrictModel):
         return self
 
 
-class GlassStock(StrictModel):
+class SupplyStock(StrictModel):
+    supply: Literal['purchase', 'inventory'] = 'purchase'
+
+    @property
+    def purchase_price(self):
+        return self.price_cents if self.supply == 'purchase' else 0
+
+    @model_validator(mode='after')
+    def finite_inventory(self):
+        if self.supply == 'inventory' and self.available is None:
+            raise ValueError('已有库存必须填写实际可用数量，不能不限量')
+        return self
+
+
+class GlassStock(SupplyStock):
     id: str = Field(min_length=1, max_length=80)
     width: int = Field(gt=0, le=100000*TICKS)
     height: int = Field(gt=0, le=100000*TICKS)
@@ -67,6 +81,7 @@ class GlassSettings(StrictModel):
 
 
 class Project(StrictModel):
+    name_mode: Literal['auto', 'custom'] = 'custom'
     schema_version: Literal[1] = 1
     name: str = Field(min_length=1, max_length=100)
     width: int = Field(gt=0, le=100000*TICKS)
@@ -89,7 +104,7 @@ class Project(StrictModel):
         return self
 
 
-class Stock(StrictModel):
+class Stock(SupplyStock):
     id: str = Field(min_length=1, max_length=80)
     stock_key: str = Field(min_length=1, max_length=60)
     length: int = Field(gt=0, le=100000*TICKS)
@@ -102,6 +117,7 @@ class CutSettings(StrictModel):
     trim_start: int = Field(default=0, ge=0, le=1000*TICKS)
     trim_end: int = Field(default=0, ge=0, le=1000*TICKS)
     objective: Literal['bars', 'cost'] = 'bars'
+    reusable_min: int = Field(default=500*TICKS, ge=0, le=100000*TICKS)
     time_limit: int = Field(default=10, ge=1, le=30)
 
 

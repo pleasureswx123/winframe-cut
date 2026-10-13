@@ -1,0 +1,109 @@
+/* 制作端导航与客户列表；不覆盖窗型设计器的布局。 */
+.studio-header{background:#fff;border-bottom:1px solid #e0e7e3}.studio-header-inner{max-width:1740px;margin:auto;min-height:88px;padding:0 40px;display:flex;align-items:center;gap:48px}
+.studio-brand{display:flex;align-items:center;gap:12px;flex-shrink:0}.studio-brand-icon{width:43px;height:43px;border-radius:12px;background:#285347;color:#fff;display:grid;place-items:center}.studio-brand strong{display:block;font-size:21px;letter-spacing:1px;line-height:27px}.studio-brand small{font-size:9px;letter-spacing:1.7px;margin-left:9px;color:#71867b}.studio-brand-caption{display:block;font-size:11px;letter-spacing:3px;color:#74867c;margin-top:2px}
+.studio-nav{display:flex;align-items:center}.studio-nav a{display:flex;align-items:center;gap:8px;border-radius:8px;padding:12px 17px;color:#6b7b72;font-size:14px;white-space:nowrap}.studio-nav a.selected,.studio-nav a:hover{background:#eaf2ed;color:#285a45}.studio-nav a.selected{font-weight:600}
+.studio-account-actions{margin-left:auto;display:flex;align-items:center;gap:24px;min-width:0}.studio-admin-link{display:flex;align-items:center;gap:5px;color:#597064;font-size:13px;white-space:nowrap}.studio-account{display:flex;align-items:center;gap:10px;border-left:1px solid #e5ebe7;padding-left:24px;min-width:0}.studio-avatar{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:#f0f4ef;color:#52715c;flex-shrink:0}.studio-account b{display:block;font-size:13px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.studio-account small{display:block;font-size:10px;color:#7b8b80;margin-top:4px}.studio-account-actions .el-button{color:#7b887f;padding:8px}.studio-header a:focus-visible{outline:2px solid #315f50;outline-offset:4px}
+.customer-workspace{max-width:1328px;padding:40px 40px 64px}.customer-workspace .page-heading{margin-bottom:30px}.customer-workspace .page-heading h1{font-size:29px;margin:10px 0 12px}.customer-workspace .page-heading .muted{font-size:13px}.customer-workspace .page-heading>.el-button{min-height:42px;padding:11px 18px}.customer-library{padding:0;border-radius:12px;overflow:hidden}.customer-library-toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 26px;border-bottom:1px solid #edf1ed}.customer-library-title{display:flex;align-items:center;gap:12px;white-space:nowrap}.customer-library-title h2{font-size:16px}.customer-library-title>span{font-size:11px;color:#778c7e;background:#f0f4ef;padding:4px 9px;border-radius:5px}.customer-library-toolbar .search-row{margin:0;width:360px;max-width:100%;gap:10px}.customer-library-toolbar .el-input__wrapper{min-height:38px;background:#f9fbf8}.customer-library-toolbar .el-button{min-height:38px;padding:10px 18px}
+.customer-library .entity-grid{margin:0;gap:18px;min-height:0}.customer-library .entity-grid.has-items{padding:24px}.customer-card{padding:22px;border-radius:10px;border-color:#e5ebe3}.customer-card-heading{display:flex;align-items:center;gap:12px;margin-bottom:22px}.customer-card-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;background:#f0f5ef;color:#628269;flex-shrink:0}.customer-card-heading h2{font-size:18px;margin:0;overflow-wrap:anywhere}.customer-detail{display:flex;align-items:flex-start;gap:9px;color:#738478;font-size:12px;line-height:1.8;margin-top:10px}.customer-detail svg{flex-shrink:0;margin-top:4px}.customer-note{margin-top:14px;background:#f8faf7;padding:10px;color:#8a978d;font-size:12px;line-height:1.7}.customer-card .action-row{border-top:1px solid #edf1ea;padding-top:18px;gap:8px}.customer-card .action-row>a{margin-right:auto}.customer-empty{padding:64px 24px 42px;text-align:center;display:flex;align-items:center;flex-direction:column}.customer-empty-icon{width:80px;height:80px;border-radius:24px;background:#eef4ee;color:#678b73;display:grid;place-items:center;margin-bottom:24px;box-shadow:0 0 0 9px #f9fbf7}.customer-empty h2{font-size:20px;font-weight:600}.customer-empty>p{font-size:13px;color:#86958a;line-height:1.8;margin:13px 0 24px;max-width:440px}.customer-empty>.el-button{min-height:40px;padding:10px 20px}.customer-flow{margin-top:42px;border-top:1px solid #edf2ec;padding-top:24px;display:flex;align-items:center;gap:20px;color:#a0ada2;font-size:12px}.customer-flow span{display:flex;align-items:center;gap:7px;color:#7e9283}.customer-library>.el-pagination{margin:0;padding:0 24px 24px}
+@media(max-width:1050px){.studio-header-inner{padding:0 24px;gap:24px}.studio-account-actions{gap:12px}.studio-account{padding-left:12px}.studio-brand small{display:none}.customer-workspace{padding:30px 24px 48px}}
+@media(max-width:760px){.studio-header-inner{padding:16px 16px 0;gap:16px;flex-wrap:wrap}.studio-brand-icon{width:36px;height:36px;border-radius:10px}.studio-brand strong{font-size:19px}.studio-brand-caption{font-size:10px}.studio-account-actions{gap:10px}.studio-account{display:none}.studio-logout-text{display:none}.studio-nav{order:3;width:100%;padding:10px 0;border-top:1px solid #eff2ef}.studio-nav a{width:100%;justify-content:center;padding:11px 12px}.customer-workspace{padding:26px 16px 40px}.customer-workspace .page-heading{gap:18px;margin-bottom:22px}.customer-workspace .page-heading h1{font-size:25px}.customer-library-toolbar{align-items:flex-start;flex-direction:column;padding:20px 16px;gap:16px}.customer-library-toolbar .search-row{width:100%}.customer-empty{padding:48px 18px 28px}.customer-empty h2{font-size:18px}.customer-flow{gap:10px;font-size:10px;max-width:100%}.customer-flow span{gap:4px}.customer-flow span svg{display:none}.customer-library .entity-grid.has-items{padding:16px}.customer-card{padding:18px}}
+
+/* 房屋项目沿用客户列表的工具栏和空状态。 */
+.house-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#7c9182;margin-bottom:6px}.house-back:hover{color:#315f50}.house-metadata{display:flex;flex-wrap:wrap;gap:10px 20px;font-size:13px;color:#84958a;line-height:1.8}.house-metadata>span{display:flex;align-items:center;gap:6px;overflow-wrap:anywhere}.house-metadata svg{flex-shrink:0}.house-actions{gap:12px}.house-actions .el-button{min-height:42px;padding:11px 18px}.window-location{display:block;font-size:10px;color:#879b8a;margin-bottom:7px}.window-quantity{margin-left:auto;white-space:nowrap;border-radius:5px;padding:4px 8px;background:#f0f5ee;color:#6c876e;font-size:11px}.window-dimensions{padding:16px;background:#f7faf6;border:1px solid #edf2e9;border-radius:8px;display:flex;flex-direction:column;gap:7px}.window-dimensions strong{font-size:22px;font-weight:500;font-variant-numeric:tabular-nums}.window-dimensions strong span{color:#9aaa9d;font-size:17px;margin:0 4px}.window-dimensions small{font-size:10px;color:#8a9b8c}.window-card .action-row>a{margin-right:0}.window-card .action-row>.el-button:last-child{margin-left:auto}.window-library .customer-empty>a .el-button{min-height:40px;padding:10px 20px}
+@media(max-width:760px){.house-actions{width:100%;display:flex;gap:10px}.house-actions>a{flex:1}.house-actions .el-button{width:100%;padding:10px 8px;font-size:12px}.house-metadata{font-size:12px}.window-card .customer-card-heading{gap:10px}.window-dimensions strong{font-size:21px}}
+
+/* 将窗型归属、输入字段和辅助操作分层，保持画布上方区域紧凑。 */
+.window-context{padding:0;margin-bottom:22px;border-radius:12px;overflow:hidden}
+.window-context-heading{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #edf1e9}
+.window-context-title{display:flex;align-items:center;gap:12px;min-width:0}.window-context-icon{display:grid;place-items:center;width:38px;height:38px;background:#f0f5ed;color:#64816b;border-radius:10px;flex-shrink:0}.window-context-title>div{min-width:0}.window-context-title h2{font-size:14px;font-weight:600;line-height:1.6}.window-context-owner{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:#698574;margin-top:4px;overflow-wrap:anywhere}.window-context-owner:hover{color:#264e41;text-decoration:underline}.window-context-owner svg{flex-shrink:0}.window-context-caption{color:#91a08f;font-size:11px;white-space:nowrap}
+.window-context-form{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:20px;padding:20px 22px}.window-context-form .el-form-item{margin:0;min-width:0}.window-context-form .el-form-item__label{font-size:12px;margin-bottom:8px;color:#738572}.window-context-form .el-input__wrapper{min-height:38px;background:#fbfcfa;border-radius:7px}.window-context-form .el-input__prefix{color:#8da18c;margin-right:5px}.window-context-form .el-input__inner{font-size:13px}
+.window-context-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid #edf1e9;padding:10px 16px 10px 22px;background:#fafcf8}.window-context-footer>p{color:#8b9987;font-size:11px;line-height:1.7}.window-context-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}.window-context-actions>.el-button{color:#66806a;min-height:34px;padding:8px 12px;font-size:12px;border-radius:7px}.window-context-actions>.el-button:hover{background:#eef4eb}
+@media(max-width:900px){.window-context-caption{display:none}.window-context-footer{align-items:flex-start;flex-direction:column;gap:6px}.window-context-actions{align-self:flex-end}}
+@media(max-width:760px){.window-context{margin-bottom:16px}.window-context-heading{padding:16px}.window-context-form{grid-template-columns:minmax(0,1fr);padding:18px 16px;gap:18px}.window-context-form .el-input__wrapper{min-height:42px}.window-context-form .el-input__inner{font-size:16px}.window-context-footer{padding:12px 16px}.window-context-actions{width:100%;align-self:stretch;gap:6px;flex-wrap:wrap}.window-context-actions>.el-button{flex:1;min-height:40px;padding:8px 6px;white-space:nowrap}.window-context-footer>p{font-size:11px}.window-context-title h2{font-size:14px}}
+
+/* 工作台保留一套平台品牌，第二级导航仅承载当前窗型和制作流程。 */
+.studio-header.is-workbench .studio-header-inner{min-height:68px;padding:0 34px;gap:36px}
+.studio-header.is-workbench .studio-brand-icon{width:36px;height:36px;border-radius:10px}
+.studio-header.is-workbench .studio-brand strong{font-size:19px;line-height:24px}
+.studio-header.is-workbench .studio-brand-caption{font-size:10px;margin-top:0}
+.app-header.workbench-toolbar{height:56px;padding:0 34px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:24px;background:#fafcf9}
+.workbench-identity{display:flex;align-items:center;gap:14px;min-width:0}
+.workbench-label{font-size:12px;font-weight:600;color:#526e5e;white-space:nowrap}
+.workbench-name{border-left:1px solid #dde6dc;padding-left:14px;font-size:12px;color:#89988b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.workbench-toolbar .header-right{justify-self:end;min-width:0}
+.workbench-toolbar .header-right .el-button{height:32px;background:transparent;border-color:#dde5db;font-size:12px}
+.app-header.workbench-toolbar nav{gap:28px}
+.app-header.workbench-toolbar nav a{font-size:13px}
+.app-header.workbench-toolbar nav a:focus-visible{outline:2px solid #315f50;outline-offset:-3px}
+@media(max-width:1150px){.studio-header.is-workbench .studio-header-inner{padding:0 20px;gap:24px}.app-header.workbench-toolbar{padding:0 20px;gap:16px}.workbench-name{display:none}.app-header.workbench-toolbar nav{gap:20px}}
+@media(max-width:760px){
+.studio-header.is-workbench .studio-header-inner{padding:12px 14px 0;gap:10px;min-height:0}
+.studio-header.is-workbench .studio-nav{padding:6px 0;margin-top:2px}
+.studio-header.is-workbench .studio-nav a{padding:9px 12px;font-size:13px}
+.app-header.workbench-toolbar{height:52px;padding:0 14px;display:flex;flex-wrap:nowrap;gap:12px}
+.workbench-identity{flex:1;min-width:0;gap:10px}
+.workbench-label{font-size:11px}
+.workbench-name{display:block;font-size:11px;padding-left:10px}
+.workbench-toolbar .header-right{flex-shrink:0;margin-left:auto}
+.workbench-toolbar .header-right .el-button{height:34px;padding:8px 10px}
+.app-header.workbench-toolbar nav{gap:0}
+.app-header.workbench-toolbar nav a{font-size:12px}
+}
+
+/* 通过客户、项目、窗型三级归属帮助用户确认当前工作对象。 */
+.house-title-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin:10px 0 12px}
+.customer-workspace .house-title-row h1{margin:0}
+.project-customer-tag{display:inline-flex;align-items:center;gap:9px;padding:7px 11px;border:1px solid #dae6dc;background:#edf4ee;border-radius:7px;font-size:13px;color:#315f50;overflow-wrap:anywhere}
+.project-customer-tag span{font-size:11px;color:#829284;white-space:nowrap}
+.workbench-context-summary{min-width:0;display:flex;flex-direction:column;gap:4px}
+.workbench-context-summary .workbench-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.workbench-context-summary .workbench-name{display:block;border:0;padding:0;font-size:11px}
+.ownership-breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-bottom:16px;font-size:13px;line-height:1.7;color:#506e5c}
+.ownership-breadcrumb a,.ownership-breadcrumb>span{display:inline-flex;align-items:baseline;gap:7px;overflow-wrap:anywhere;min-width:0}
+.ownership-breadcrumb small{font-size:10px;color:#8a9b8d;white-space:nowrap}
+.ownership-breadcrumb>svg{color:#9aa99c;flex-shrink:0}
+.ownership-breadcrumb a:hover,.project-customer-tag:hover{color:#254f3e;text-decoration:underline}
+.ownership-breadcrumb>span[aria-current]{font-weight:600;color:#315645}
+.ownership-breadcrumb .ownership-pending{color:#89988b;font-size:12px}
+@media(max-width:760px){.house-title-row{gap:12px}.project-customer-tag{font-size:12px}.ownership-breadcrumb{font-size:12px;gap:6px 8px}.workbench-context-summary .workbench-label{font-size:11px}.workbench-context-summary .workbench-name{font-size:10px}}
+
+/* 保存与连续新增常驻内容区顶部，滚动到参数面板时仍可操作。 */
+.window-action-bar{position:sticky;top:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;margin:0 0 18px;background:#fff;border:1px solid #dfe7dd;border-radius:9px;box-shadow:0 3px 12px #284c3510}
+.window-action-bar>div{display:flex;gap:8px;flex-wrap:wrap}.window-action-bar .el-button{min-height:38px}.save-state{font-size:12px;color:#6e8575}
+@media(max-width:760px){.window-action-bar{flex-wrap:wrap;padding:10px;gap:8px}.window-action-bar>div{width:100%;gap:6px}.window-action-bar .el-button{flex:1;font-size:11px;padding:8px 6px;min-height:40px}.save-state{font-size:11px}}
+/* 状态保留文字与圆点，未保存内容使用橙色提醒。 */
+.save-state{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-weight:500;line-height:1.5}
+.save-state::before{content:'';width:7px;height:7px;flex-shrink:0;border-radius:50%;background:currentColor}
+.save-state--warning{color:#995500;background:#fff4df;border:1px solid #f2d29b}
+.save-state--saved{color:#286044;background:#edf7ef;border:1px solid #cce5d3}
+.save-state--processing{color:#28638b;background:#edf5fc;border:1px solid #cfdfef}
+.save-state--neutral{color:#647568;background:#f2f5f1;border:1px solid #e0e6dd}
+/* 整项目排料类型采用分段按钮，避免细下划线难以识别。 */
+.project-mode-bar{display:flex;align-items:center;gap:24px;margin:22px 0 18px}
+.project-mode-tabs{flex-shrink:0}
+.project-mode-tabs .el-tabs__header{margin:0}
+.project-mode-tabs .el-tabs__nav-wrap::after,.project-mode-tabs .el-tabs__active-bar{display:none}
+.project-mode-tabs .el-tabs__nav{display:flex;gap:4px;padding:5px;background:#eaf0e9;border:1px solid #dde6dc;border-radius:10px}
+.project-mode-tabs .el-tabs__item{height:44px;padding:0 22px!important;gap:8px;border-radius:7px;font-size:14px;font-weight:500;color:#6b8070;transition:background .15s,color .15s}
+.project-mode-tabs .el-tabs__item.is-active{background:#315f50;color:#fff;box-shadow:0 2px 5px #2347351a}
+.project-mode-tabs .el-tabs__item:not(.is-active):not(.is-disabled):hover{background:#f8fbf6;color:#315f50}
+.project-mode-tabs .el-tabs__item.is-disabled{opacity:.5;cursor:not-allowed}
+.project-mode-tabs .el-tabs__item:focus-visible{outline:2px solid #8aaa78;outline-offset:-3px}
+.project-mode-description{font-size:12px;color:#7c8e7d;line-height:1.7}
+@media(max-width:760px){.project-mode-bar{align-items:stretch;flex-direction:column;gap:9px;margin:18px 0 16px}.project-mode-tabs .el-tabs__nav{width:100%}.project-mode-tabs .el-tabs__item{flex:1;padding:0 12px!important;font-size:13px}.project-mode-description{font-size:11px;padding-left:5px}}
+/* 项目排料清单将归属、尺寸与数量分列，窄屏改为逐窗信息卡。 */
+.project-window-roster{padding:0;overflow:hidden}
+.project-window-roster>summary{display:flex;align-items:center;gap:24px;padding:20px 22px;list-style:none;min-height:80px}
+.project-window-roster>summary::-webkit-details-marker{display:none}
+.project-window-roster>summary:focus-visible{outline:2px solid #315f50;outline-offset:-3px}
+.project-window-roster>summary:hover{background:#f9fbf7}
+.roster-heading{display:flex;align-items:center;gap:12px;min-width:0}.roster-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:#edf4ed;color:#557d62;flex-shrink:0}
+.roster-heading strong{display:block;font-size:15px;font-weight:600;color:#315344}.roster-heading small{display:block;margin-top:5px;color:#869887;font-size:11px;line-height:1.6}
+.roster-totals{display:flex;gap:18px;margin-left:auto;color:#7b8e7d;white-space:nowrap;font-size:12px}.roster-totals b{color:#315f50;font-size:19px;font-weight:600}
+.roster-toggle{display:flex;align-items:center;gap:6px;color:#68836e;font-size:12px;white-space:nowrap}.roster-collapse{display:none}.project-window-roster[open] .roster-expand{display:none}.project-window-roster[open] .roster-collapse{display:inline}.project-window-roster[open] .roster-toggle svg{transform:rotate(180deg)}
+.roster-content{border-top:1px solid #e6ece3}.roster-columns,.roster-list>li{display:grid;grid-template-columns:1.5fr 1.15fr 1.2fr .65fr 1fr;gap:18px;align-items:center;padding:15px 22px}
+.roster-columns{background:#f7faf4;font-size:11px;color:#859581}.roster-list{padding:0;margin:0;list-style:none;max-height:360px;overflow:auto}.roster-list>li{font-size:12px;color:#69816d;border-top:1px solid #edf1e9;line-height:1.7}.roster-list>li:first-child{border-top:0}.roster-list>li>*{min-width:0;overflow-wrap:anywhere}.roster-name{font-weight:600;color:#365746}.roster-size{font-variant-numeric:tabular-nums}.roster-quantity{font-weight:500;display:inline-block;padding:2px 8px;background:#edf4eb;border-radius:5px;color:#527a58;white-space:nowrap}.roster-mobile-unit{display:none}.roster-empty{padding:22px;color:#8c9b88;font-size:12px}
+@media(max-width:760px){.project-window-roster>summary{padding:16px;gap:12px;flex-wrap:wrap}.roster-heading{flex:1}.roster-toggle{margin-left:auto;font-size:11px}.roster-totals{order:3;width:100%;margin:0;padding-left:52px;gap:18px}.roster-columns{display:none}.roster-list>li{display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:16px}.roster-name{font-size:14px;margin-bottom:3px}.roster-list>li>span{display:flex;justify-content:space-between;gap:12px;text-align:right}.roster-list>li>span::before{content:attr(data-label);color:#8b9b86;white-space:nowrap;text-align:left}.roster-mobile-unit{display:none}}
+.source-settings-title{margin:24px 0 18px;font-size:15px;color:#365746}
+.window-context-form{grid-template-columns:repeat(2,minmax(0,1fr))}.window-name-control{display:flex;align-items:center;gap:14px;width:100%}.window-name-control .el-checkbox{flex-shrink:0}.window-name-hint{display:block;color:#879884;font-size:11px;line-height:1.7;margin-top:6px}.window-name-control input[readonly]{color:#50725b}.window-name-field .el-form-item__content{display:block}
+@media(max-width:760px){.window-context-form{grid-template-columns:minmax(0,1fr)}.window-name-control{flex-wrap:wrap;gap:6px}.window-name-control .el-checkbox{height:26px}}

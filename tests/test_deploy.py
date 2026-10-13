@@ -31,6 +31,17 @@ def test_incomplete_artifact_rejected(tmp_path):
         launcher().check_artifact(tmp_path)
 
 
+def test_artifact_requires_both_frontends(tmp_path):
+    for relative in ['dist/index.html', 'backend/main.py', '.python/uvicorn/__init__.py']:
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text('', encoding='utf-8')
+    with pytest.raises(RuntimeError, match='admin.html'):
+        launcher().check_artifact(tmp_path)
+    (tmp_path / 'dist/admin.html').write_text('', encoding='utf-8')
+    launcher().check_artifact(tmp_path)
+
+
 def test_dependency_install_ignores_platform_package_sources(tmp_path, monkeypatch):
     path = Path(__file__).resolve().parents[1] / 'scripts' / 'build_vefaas.py'
     spec = importlib.util.spec_from_file_location('build_vefaas', path)
